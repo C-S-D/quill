@@ -34,10 +34,12 @@ jobs:
           node-version: 20
 
       - run: npm ci
-      - run: ./scripts/release.js --version ${{ github.event.inputs.version }} ${{ github.event.inputs.dry-run == 'true' && '--dry-run' || '' }}
-        env:
+      - env:
+          VERSION: ${{ github.event.inputs.version }}
+          DRY_RUN_FLAG: ${{ github.event.inputs.dry-run == 'true' && '--dry-run' || '' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: ./scripts/release.js --version $VERSION $DRY_RUN_FLAG
 
       - name: Archive npm package tarball
         uses: actions/upload-artifact@v4
